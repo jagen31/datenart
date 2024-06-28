@@ -1,6 +1,6 @@
 #lang racket
 
-(require art 2htdp/image (for-syntax syntax/parse racket/syntax racket/list racket/string))
+(require (except-in art bitmap) 2htdp/image (for-syntax syntax/parse racket/syntax racket/list racket/string))
 
 (define-coordinate (entity [name]))
 (define-art-object (attribute [id]))
@@ -130,13 +130,13 @@
 
 
 
-(define-art the-table
+#;(define-art the-table
   (@ [(table sales)]
     (column-names id customer-first-name customer-last-name customer-email associate-name product-name date)
     (column-sql-types int (char 32) (char 32) (char 128) (char 32) (char 32) timestamp)
     (primary-key id)))
 
-(define-art the-table-with-data
+#;(define-art the-table-with-data
   the-table
   (@ [(table sales)]
     (insert (number 1) (string "Joe") (string "Schmoe")
@@ -147,13 +147,13 @@
 
 #;(dr the-table-with-data)
 
-(define-art the-model 
+#;(define-art the-model 
   (@ [(entity customer)] (has associate) (attribute name) (attribute email))
   (@ [(entity product)] (attribute name))
   (@ [(entity associate)] (has customer) (attribute name))
   (@ [(entity sale)] (has customer) (has product) (attribute date)))
 
-(define-art the-table-with-model+mapping
+#;(define-art the-table-with-model+mapping
   the-model the-table-with-data
   (@ [(table sales)]
      (column-mapping
@@ -201,12 +201,12 @@
           (@ [(table new-table-name2)]
              (row new-row-value ...)) ...))])))
 
-(displayln "WIDE TABLE:::::")
-(dr the-table-with-model+mapping
+#;(displayln "WIDE TABLE:::::")
+#;(dr the-table-with-model+mapping
     (delete column-mapping) (delete attribute))
 
-(displayln "3NF:::::")
-(dr the-table-with-model+mapping
+#;(displayln "3NF:::::")
+#;(dr the-table-with-model+mapping
   (3nf) (delete column-mapping) (delete attribute))
 
 
@@ -245,14 +245,14 @@
           [_ ""]))
       "\n\n")))
 
-(match-define (list out in _ err _)
+#;(match-define (list out in _ err _)
   (process 
     (format "psql \"user=jqpublic password=password\" -c \"~a\"" 
             (realize (postgres-realizer) the-table (@ [(table sales)] (table-header->ddl))))))
 
-(displayln (port->string out))
+#;(displayln (port->string out))
 
-(qr the-table-with-data
+#;(qr the-table-with-data
     (@ [(table sales)] (select [customer-first-name] #:where (boolean #t) #:into test))
     (run-select))
 
