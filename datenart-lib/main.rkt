@@ -15,7 +15,8 @@
     (let/ec break
       (unless l (break r))
       (unless r (break l))
-      (error 'merge-table "oops, cannot merge table for now"))))
+      l
+      #;(error 'merge-table "oops, cannot merge table for now"))))
   
 (define-hom-within?-rule table (λ (l r _ __ ___)
   (syntax-parse #`(#,l #,r)
@@ -55,7 +56,7 @@
        #:with (_ col* ...) (require-context (lookup-ctxt) sel #'column-names)
        (define cols* (syntax->datum #'(col* ...)))
        (define ixs (for/list ([col (syntax->datum #'(col ...))]) (index-of cols* col)))
-       (define rows (context-ref*/within (current-ctxt) (get-id-ctxt sel) #'row))
+       (define rows (context-ref*/within (lookup-ctxt) (get-id-ctxt sel) #'row))
 
        (define rows*
          (for/list ([row rows])
